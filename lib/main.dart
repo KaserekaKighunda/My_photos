@@ -36,6 +36,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   List<File> _images = [];
+  int _index = 0;
   Future<void> _pickImage({required ImageSource source}) async {
     ImagePicker picker = ImagePicker();
     XFile? xFile = await picker.pickImage(source: source);
@@ -56,8 +57,15 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+  void _updateIndex(File file) {
+    setState(() {
+      _index = _images.indexOf(file);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    final Size size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.primary,
@@ -74,7 +82,7 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ],
       ),
-      body: Center(
+      body: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
@@ -85,6 +93,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 child: Row(
                   children: _images.map((img) {
                     return InkWell(
+                      onTap: (() => _updateIndex(img)),
                       onLongPress: (() => _removePicture(img)),
                       child: Padding(
                         padding: EdgeInsets.symmetric(horizontal: 8),
@@ -97,6 +106,20 @@ class _MyHomePageState extends State<MyHomePage> {
                   }).toList(),
                 ),
               ),
+            ),
+            Divider(),
+            Card(
+              clipBehavior: Clip.antiAlias,
+              //color: Theme.of(context).colorScheme.onPrimary,
+              margin: EdgeInsets.all(16),
+              child: Container(
+                  height: size.width * 0.7,
+                  width: size.width * 0.7,
+                  child: (_images.isNotEmpty && _images.length > _index)
+                      ? Image.file(_images[_index], fit: BoxFit.cover)
+                      : SizedBox(
+                          height: size.width * 0.7,
+                        )),
             )
           ],
         ),
