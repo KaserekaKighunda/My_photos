@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 void main() {
   runApp(const MyApp());
@@ -32,17 +35,64 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  List<File> _images = [];
+  Future<void> _pickImage({required ImageSource source}) async {
+    ImagePicker picker = ImagePicker();
+    XFile? xFile = await picker.pickImage(source: source);
+    if (xFile != null) {
+      setState(() {
+        String path = xFile.path;
+        File? file = File(path);
+        if (file != null) {
+          _images.add(file);
+        }
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.primary,
         title: Text(widget.title),
+        centerTitle: true,
+        actions: [
+          IconButton(
+            onPressed: (() => _pickImage(source: ImageSource.gallery)),
+            icon: Icon(Icons.photo_album),
+          ),
+          IconButton(
+            onPressed: (() => _pickImage(source: ImageSource.camera)),
+            icon: Icon(Icons.camera_alt),
+          ),
+        ],
       ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[],
+          children: <Widget>[
+            SizedBox(
+              height: 128,
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: _images.map((img) {
+                    return InkWell(
+                      onLongPress: () {},
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 8),
+                        child: CircleAvatar(
+                          radius: 54,
+                          backgroundImage: FileImage(img),
+                        ),
+                      ),
+                    );
+                  }).toList(),
+                ),
+              ),
+            )
+          ],
         ),
       ),
     );
