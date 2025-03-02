@@ -50,6 +50,12 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
+  void _removePicture(File file) {
+    setState(() {
+      _images.remove(file);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -79,7 +85,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 child: Row(
                   children: _images.map((img) {
                     return InkWell(
-                      onLongPress: () {},
+                      onLongPress: (() => _removePicture(img)),
                       child: Padding(
                         padding: EdgeInsets.symmetric(horizontal: 8),
                         child: CircleAvatar(
