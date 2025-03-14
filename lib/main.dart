@@ -37,6 +37,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   List<File> _images = [];
   int _index = 0;
+
   Future<void> _pickImage({required ImageSource source}) async {
     ImagePicker picker = ImagePicker();
     XFile? xFile = await picker.pickImage(source: source);
@@ -68,7 +69,7 @@ class _MyHomePageState extends State<MyHomePage> {
     final Size size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.primary,
+        backgroundColor: Theme.of(context).colorScheme.onPrimaryFixed,
         title: Text(widget.title, style: TextStyle(color: Colors.white)),
         centerTitle: true,
         actions: [
@@ -110,18 +111,26 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
             ),
             Divider(),
+            Text(
+              "Photo dans ma galerie",
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.onPrimaryFixed,
+                fontSize: 22,
+              ),
+            ),
             Card(
               clipBehavior: Clip.antiAlias,
-              //color: Theme.of(context).colorScheme.onPrimary,
+              color: Theme.of(context).colorScheme.onPrimaryFixed,
               margin: EdgeInsets.all(16),
               child: Container(
-                  height: size.width * 1.3,
-                  width: size.width * 0.9,
-                  child: (_images.isNotEmpty && _images.length > _index)
-                      ? Image.file(_images[_index], fit: BoxFit.cover)
-                      : SizedBox(
-                          height: size.width * 0.7,
-                        )),
+                height: size.width * 1.3,
+                width: size.width * 0.9,
+                child: (_images.isNotEmpty && _images.length > _index)
+                    ? Image.file(_images[_index], fit: BoxFit.cover)
+                    : SizedBox(
+                        height: size.width * 0.7,
+                      ),
+              ),
             )
           ],
         ),
